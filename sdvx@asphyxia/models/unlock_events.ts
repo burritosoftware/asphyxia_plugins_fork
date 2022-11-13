@@ -20,6 +20,7 @@ export interface XRecord {
 */
 export interface GMZ2022 {
   collection: 'gmz-2022';
+  phase: number;
 
   ldj: number;
   kfc: number;
@@ -47,4 +48,11 @@ export interface GMZ2022 {
   l442: number;
   pan2: number;
   m392: number;
+}
+
+export interface GMZ2022_Log {
+  collection: 'gmz-2022-log';
+  mode: string;
+  points: number;
+  start_date: number;
 }

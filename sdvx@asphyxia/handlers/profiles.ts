@@ -3,7 +3,7 @@ import { SDVX_AUTOMATION_SONGS } from '../data/vvw';
 import { Item } from '../models/item';
 import { Param } from '../models/param';
 import { Arena } from '../models/arena';
-import { XRecord } from '../models/unlock_events';
+import { XRecord, GMZ2022, GMZ2022_Log } from '../models/unlock_events';
 import { MusicRecord } from '../models/music_record';
 import { CourseRecord } from '../models/course_record';
 import { Profile } from '../models/profile';
@@ -652,17 +652,90 @@ export const save: EPR = async (info, data, send) => {
 export const save_e: EPR = async (info, data, send) => {
   /*
   start_option
-  0 = normal
-  1 = friend (yet to confirm)
-  2 = blaster
-  3 = skill analyzer (yet to confirm)
-  4 = premium time
-  5 = megamix battle
-  6 = arena battle (yet to confirm)
+  - normal
+    - light: 0
+    - standard: 1
+  - friend
+    - light: 0
+    - standard: 1
+  - blaster
+    - blaster start: 2
+  - skill analyzer
+    - light start: 0
+  - premium time
+    - premium time start: 4
+  - megamix battle
+    - megamix start: 5
+  - arena battle
+    - arena start: 0
+    - standard start: 1
   */
+  const gaugePoint = [
+    {
+      'mode': 'LIGHT START',
+      'points': 100
+    },
+    {
+      'mode': 'STANDARD START',
+      'points': 120
+    },
+    {
+      'mode': 'BLASTER START',
+      'points': 200
+    },
+    {
+      'mode': 'NONE',
+      'points': 0
+    },
+    {
+      'mode': 'PREMIUM TIME START',
+      'points': 200
+    },
+    {
+      'mode': 'MEGAMIX START',
+      'points': 100
+    }
+  ]
+
+  const pointDistribution = {
+    'phase1': [100, 15, 8, 3],
+    'phase2': [100, 25, 5, 1]
+  }
+
   console.log("SAVE_E")
-  console.log("info: " + JSON.stringify($(info)))
-  console.log("data: " + JSON.stringify($(data)))
+  const refid = $(data).str('refid');
+  const startOption = $(data).numbers('start_option')[0]
+  // console.log(startOption)
+  console.log(gaugePoint[startOption].mode + " - " + gaugePoint[startOption].points)
+  const genePrintCount = $(data).numbers('print_num')[0]
+  console.log(genePrintCount)
+  const valgeneCount = $(data).numbers('valgene_num')[0]
+  console.log(valgeneCount)
+  const startTimeDateStamp = parseInt($(data).content('start_time')[0].slice(0, -1))
+  const startTimeString = new Date(parseInt($(data).content('start_time')[0].slice(0, -1))).toLocaleString("en-US")
+  console.log(startTimeString)
+
+  // let phase = 1
+  // const gmzData = DB.Find<GMZ2022>(refid, {collection:'gmz-2022'})
+  // if(gmzData != []) {
+  //   phase = gmzData['phase']
+  // } else {
+  //   phase = 1
+  // }
+
+  // if(phase == 1) {
+  //   //gaugePoint[startOption].points
+  //   await DB.Upsert<GMZ2022>(
+  //     refid,
+  //     { collection: 'gmz-2022' },
+  //     { 
+  //       $inc: { 
+  //         param: item.param 
+  //       } 
+  //     }
+  //   );
+  // }
+
   return send.object({ result: K.ITEM('u8', 1) });
 }
 
