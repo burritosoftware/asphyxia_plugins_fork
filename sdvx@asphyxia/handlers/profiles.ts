@@ -3,7 +3,7 @@ import { SDVX_AUTOMATION_SONGS } from '../data/vvw';
 import { Item } from '../models/item';
 import { Param } from '../models/param';
 import { Arena } from '../models/arena';
-import { XRecord } from '../models/xrecord';
+import { XRecord } from '../models/unlock_events';
 import { MusicRecord } from '../models/music_record';
 import { CourseRecord } from '../models/course_record';
 import { Profile } from '../models/profile';
@@ -428,6 +428,7 @@ export const save: EPR = async (info, data, send) => {
 
   // Save Profile
   if (version === 6) {
+    console.log(JSON.stringify($(data)))
     await DB.Update<Profile>(
       refid,
       { collection: 'profile' },
@@ -469,7 +470,65 @@ export const save: EPR = async (info, data, send) => {
         },
       }
     );
+
+    // Save Arena Data
+    const arena_data = $(data).elements('arena');
+    for (const are of arena_data) {
+      const earnedUR = are.number('earned_ultimate_rate');
+      const earnedSP = are.number('earned_shop_point');
+      const earnedRP = are.number('earned_rank_point');
+      const earnedLE = are.number('earned_live_energy');
+      const rankPlay = are.str('rank_play') == 'true' ? 1 : 0;
+      const ultimatePlay = are.str('ultimate_play') == 'true' ? 1 : 0;
+      await DB.Upsert<Arena>(
+        refid,
+        { 
+          collection: 'arena',
+          season: Object.keys(ARENA).findIndex(data => data == U.GetConfig('arena_szn')) + 1
+        },
+        { 
+          $inc: { 
+            ultimateRate: _.isNil(earnedUR) ? 0 : earnedUR,
+            shopPoint: _.isNil(earnedSP) ? 0 : earnedSP,
+            rankPoint: _.isNil(earnedRP) ? 0 : earnedRP,
+            liveEnergy: _.isNil(earnedLE) ? 0 : earnedLE,
+            rankCount: rankPlay,
+            ultimateCount: ultimatePlay
+          } 
+        }
+      );
+    }
+
+    // Add X-Record points
+    if(U.GetConfig('x_record')) {
+      let addLM = 1
+      let addVM = 10
+      let xrData = await DB.FindOne(refid, {collection: 'x-record'})
+      if (xrData != null) {
+        if(xrData['lm'] + 1 > 200) {
+          addLM = 0
+          console.log('LM Points Capped')
+        }
+        if(xrData['vm'] + 10 > 200) {
+          addVM = 10 - ((xrData['vm'] + 10) - 200)
+          console.log('VM Points Capped')
+        }
+      }
+      await DB.Upsert<XRecord>(
+        refid,
+        {
+          collection: 'x-record'
+        },
+        {
+          $inc: {
+            lm: addLM,
+            vm: addVM
+          }
+        }
+      );
+    }
   }
+
   if (version === 5 || version === 4) {
     await DB.Update<Profile>(
       refid,
@@ -587,65 +646,25 @@ export const save: EPR = async (info, data, send) => {
     }
   );
 
-  // Save Arena Data
-  const arena_data = $(data).elements('arena');
-  for (const are of arena_data) {
-    const earnedUR = are.number('earned_ultimate_rate');
-    const earnedSP = are.number('earned_shop_point');
-    const earnedRP = are.number('earned_rank_point');
-    const earnedLE = are.number('earned_live_energy');
-    const rankPlay = are.str('rank_play') == 'true' ? 1 : 0;
-    const ultimatePlay = are.str('ultimate_play') == 'true' ? 1 : 0;
-    await DB.Upsert<Arena>(
-      refid,
-      { 
-        collection: 'arena',
-        season: Object.keys(ARENA).findIndex(data => data == U.GetConfig('arena_szn')) + 1
-      },
-      { 
-        $inc: { 
-          ultimateRate: _.isNil(earnedUR) ? 0 : earnedUR,
-          shopPoint: _.isNil(earnedSP) ? 0 : earnedSP,
-          rankPoint: _.isNil(earnedRP) ? 0 : earnedRP,
-          liveEnergy: _.isNil(earnedLE) ? 0 : earnedLE,
-          rankCount: rankPlay,
-          ultimateCount: ultimatePlay
-        } 
-      }
-    );
-  }
-
-  // Add X-Record points
-  if(U.GetConfig('x_record')) {
-    let addLM = 1
-    let addVM = 10
-    let xrData = await DB.FindOne(refid, {collection: 'x-record'})
-    if (xrData != null) {
-      if(xrData['lm'] + 1 > 200) {
-        addLM = 0
-        console.log('LM Points Capped')
-      }
-      if(xrData['vm'] + 10 > 200) {
-        addVM = 10 - ((xrData['vm'] + 10) - 200)
-        console.log('VM Points Capped')
-      }
-    }
-    await DB.Upsert<XRecord>(
-      refid,
-      {
-        collection: 'x-record'
-      },
-      {
-        $inc: {
-          lm: addLM,
-          vm: addVM
-        }
-      }
-    );
-  }
-
   return send.success();
 };
+
+export const save_e: EPR = async (info, data, send) => {
+  /*
+  start_option
+  0 = normal
+  1 = friend (yet to confirm)
+  2 = blaster
+  3 = skill analyzer (yet to confirm)
+  4 = premium time
+  5 = megamix battle
+  6 = arena battle (yet to confirm)
+  */
+  console.log("SAVE_E")
+  console.log("info: " + JSON.stringify($(info)))
+  console.log("data: " + JSON.stringify($(data)))
+  return send.object({ result: K.ITEM('u8', 1) });
+}
 
 export const load: EPR = async (info, data, send) => {
   console.log("Loading savedata");

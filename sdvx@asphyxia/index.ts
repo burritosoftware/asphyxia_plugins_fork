@@ -18,6 +18,7 @@ import {
   buy,
   print,
   saveValgene,
+  save_e,
 } from './handlers/profiles';
 import {
   ARENA
@@ -88,7 +89,7 @@ export function register() {
   MultiRoute('shop', (_, __, send) => send.object({
     nxt_time: K.ITEM('u32', 1000 * 5 * 60)
   }));
-  MultiRoute('save_e', true);
+  MultiRoute('save_e', save_e);
   MultiRoute('save_mega',true);
   MultiRoute('play_e', true);
   MultiRoute('play_s', true);
