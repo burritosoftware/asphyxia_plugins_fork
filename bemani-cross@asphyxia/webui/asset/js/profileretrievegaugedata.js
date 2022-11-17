@@ -11,97 +11,93 @@ $(document).ready(async function() {
 	*/
 	var refid
 	var ldjData = kfcData = m32Data = mdxData = recData = l44Data = panData = m39Data = []
+	var gameInfo = {
+		'ldj': {
+			'name': 'beatmania IIDX 30 RESIDENT'
+		},
+		'kfc': {
+			'name': 'SOUND VOLTEX EXCEED GEAR'
+		},
+		'm32': {
+			'name': 'GITADORA HIGH-VOLTAGE'
+		},
+		'mdx': {
+			'name': 'DanceDanceRevolution A3'
+		},
+		'rec': {
+			'name': 'DANCERUSH STARDOM'
+		},
+		'l44': {
+			'name': 'jubeat Ave.'
+		},
+		'pan': {
+			'name': 'ノスタルジア Op.3'
+		},
+		'm39': {
+			'name': 'pop\'n music UniLab'
+		},
+
+	}
+
+	async function dbCall(pluginName) {
+		if(pluginName != '') {
+			return await axios.post(
+			    '/data/db',
+			    {
+			      command: 'Find',
+			      plugin: pluginName,
+			      args: [refid, {collection: 'gmz-2022-log'}],
+			    },
+			    { timeout: 10000 }
+		    )
+		}
+		return []
+	}
+
+
+
+	function retrieveData() {
+		ldjData = dbCall($('#ldjPlugin').text())
+		kfcData = dbCall($('#kfcPlugin').text())
+		m32Data = dbCall($('#m32Plugin').text())
+		mdxData = dbCall($('#mdxPlugin').text())
+		recData = dbCall($('#recPlugin').text())
+		l44Data = dbCall($('#l44Plugin').text())
+		panData = dbCall($('#panPlugin').text())
+		m39Data = dbCall($('#m39Plugin').text())
+		return processData()
+	}
 
 	function processData() {
-		let newData = []
-		if(ldjData.data != []) {
-			for(let index in ldjData.data) {
-				let start_date = new Date(ldjData.data[index].start_date * 1000)
-				ldjData.data[index].game = 'beatmania IIDX 30 RESIDENT'
-				ldjData.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(ldjData.data[index])
-			}
-		}
-		if(kfcData.data != []) {
-			for(let index in kfcData.data) {
-				let start_date = new Date(kfcData.data[index].start_date * 1000)
-				kfcData.data[index].game = 'SOUND VOLTEX EXCEED GEAR'
-				kfcData.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(kfcData.data[index])
-			}
-		}
-		
-		if(m32Data.data != []) {
-			for(let index in m32Data.data) {
-				let start_date = new Date(m32Data.data[index].start_date * 1000)
-				m32Data.data[index].game = 'GITADORA HIGH-VOLTAGE'
-				m32Data.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(m32Data.data[index])
-			}
-		}
-		
-		if(mdxData.data != []) {
-			for(let index in mdxData.data) {
-				let start_date = new Date(mdxData.data[index].start_date * 1000)
-				mdxData.data[index].game = 'DanceDanceRevolution A3'
-				mdxData.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(mdxData.data[index])
-			}
-		}
-		
-		if(recData.data != []) {
-			for(let index in recData.data) {
-				let start_date = new Date(recData.data[index].start_date * 1000)
-				recData.data[index].game = 'DANCERUSH STARDOM'
-				recData.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(recData.data[index])
-			}
-		}
-		
-		if(l44Data.data != []) {
-			for(let index in l44Data.data) {
-				let start_date = new Date(l44Data.data[index].start_date * 1000)
-				l44Data.data[index].game = 'jubeat Ave.'
-				l44Data.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(l44Data.data[index])
-			}
-		}
-		
-		if(panData.data != []) {
-			for(let index in panData.data) {
-				let start_date = new Date(panData.data[index].start_date * 1000)
-				panData.data[index].game = 'ノスタルジア Op.3'
-				panData.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(panData.data[index])
-			}
-		}
-		
-		if(m39Data.data != []) {
-			for(let index in m39Data.data) {
-				let start_date = new Date(m39Data.data[index].start_date * 1000)
-				m39Data.data[index].game = 'pop\'n music UniLab'
-				m39Data.data[index].start_date_string = start_date.toLocaleString()
-				newData.push(m39Data.data[index])
-			}
-		}
-
+		let newData = formatGameData('ldj', ldjData).concat(
+			formatGameData('kfc', kfcData),
+			formatGameData('m32', m32Data),
+			formatGameData('mdx', mdxData),
+			formatGameData('rec', recData),
+			formatGameData('l44', l44Data),
+			formatGameData('pan', panData),
+			formatGameData('m39', m39Data)
+		)
 		return newData.sort((a,b)=> (a.start_date < b.start_date ? 1 : -1))
+	}
+	
+	function formatGameData(gameCode, gameData) {
+		formattedData = []
+		if(gameData.data != []) {
+			for(let index in gameData.data) {
+				let start_date = new Date(gameData.data[index].start_date * 1000)
+				gameData.data[index].game = gameInfo[gameCode].name
+				gameData.data[index].start_date_string = start_date.toLocaleString()
+				formattedData.push(gameData.data[index])
+			}
+		}
+		return formattedData
 	}
 
     $("#search-data").click(async function() {
     	$("#points-list").DataTable().destroy()
     	refid = $('#refid-input').val()
-    	kfcData = await axios.post(
-		    '/data/db',
-		    {
-		      command: 'Find',
-		      plugin: 'sdvx@asphyxia',
-		      args: [refid, {collection: 'gmz-2022-log'}],
-		    },
-		    { timeout: 10000 }
-	    )
-
-	    newData = processData()
+	    newData = retrieveData()
 	    console.log(newData)
 	    $('#points-list').DataTable({
             data: newData,
