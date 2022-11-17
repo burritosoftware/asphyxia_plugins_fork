@@ -1,0 +1,28 @@
+-
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Profile 
+    .card-content
+      .field
+            label.label Event
+            .control
+              .select
+                input(name="refid" id="refid-input")
+                button(id="search-data") GO
+      div
+        table.table(id="points-list" style="width:100%")
+          thead
+            tr    
+              th Time
+              th Game
+              th Mode
+              th Points
+          tbody
+
+//div(hidden id='data-pass') !{JSON.stringify(profile)}
+script(src="static/asset/js/datatables.js")
+script(src="static/asset/js/profileretrievegaugedata.js") 
