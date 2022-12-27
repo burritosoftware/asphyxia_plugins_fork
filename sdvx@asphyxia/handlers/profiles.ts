@@ -3,7 +3,7 @@ import { SDVX_AUTOMATION_SONGS } from '../data/vvw';
 import { Item } from '../models/item';
 import { Param } from '../models/param';
 import { Arena } from '../models/arena';
-import { XRecord, GMZ2022, GMZ2022_Log } from '../models/unlock_events';
+import { XRecord, GMZ2022_Log } from '../models/unlock_events';
 import { MusicRecord } from '../models/music_record';
 import { CourseRecord } from '../models/course_record';
 import { Profile } from '../models/profile';

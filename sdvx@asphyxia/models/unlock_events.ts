@@ -18,38 +18,6 @@ export interface XRecord {
 - M39: pop'n music
 
 */
-export interface GMZ2022 {
-  collection: 'gmz-2022';
-  phase: number;
-
-  ldj: number;
-  kfc: number;
-  m32: number;
-  mdx: number;
-  rec: number;
-  l44: number;
-  pan: number;
-  m39: number;
-
-  ldj_kfc: number;
-  kfc_m32: number;
-  m32_mdx: number;
-  mdx_rec: number;
-  rec_l44: number;
-  l44_pan: number;
-  pan_m39: number;
-  m39_ldj: number;
-
-  ldj2: number;
-  kfc2: number;
-  m322: number;
-  mdx2: number;
-  rec2: number;
-  l442: number;
-  pan2: number;
-  m392: number;
-}
-
 export interface GMZ2022_Log {
   collection: 'gmz-2022-log';
   mode: string;

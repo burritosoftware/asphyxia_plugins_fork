@@ -1,6 +1,5 @@
 export interface Profile {
   collection: 'profile';
-  gmz2022Phase: number;
 }
 
 /*
@@ -16,6 +15,9 @@ export interface Profile {
 */
 export interface GMZ2022 {
   collection: 'gmz-2022';
+  
+  phase: number;
+  lastTimeChecked: number;
 
   ldj: number;
   kfc: number;
