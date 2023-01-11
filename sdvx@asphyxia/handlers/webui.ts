@@ -178,8 +178,8 @@ export const copyResourcesFromGame = async (data: {}) => {
   console.log('Getting new music_db info')
   if(IO.Exists(U.GetConfig('sdvx_eg_root_dir') + "/data/others/music_db.xml")) {
     let mdb = U.parseXML(U.DecodeString(await IO.ReadFile(U.GetConfig('sdvx_eg_root_dir') + "/data/others/music_db.xml"), "shift_jis"), false)
-    let ea3Config = U.parseXML(U.DecodeString(await IO.ReadFile(U.GetConfig('sdvx_eg_root_dir') + "/prop/ea3-config.xml"), "shift_jis"), false)
-    let version = ea3Config['ea3']['soft']['ext']['@content'];
+    let ea3Config = U.parseXML(U.DecodeString(await IO.ReadFile(U.GetConfig('sdvx_eg_root_dir') + "/prop/ea3-ident.xml"), "shift_jis"), false)
+    let version = ea3Config['ea3_conf']['soft']['ext']['@content'];
     let prevAssetMdb = []
     if(IO.Exists('webui/asset/json/music_db.json')) {
       prevAssetMdb = JSON.parse(U.DecodeString(await IO.ReadFile('webui/asset/json/music_db.json'), 'utf8'))
