@@ -46,7 +46,8 @@ export const INFORMATION6 = {
   '2022071200': ['[img:ver06/info_psd.ifs:hexa_diver_220714]'],
   '2022081600': ['[img:ver06/info_psd.ifs:hexa_diver_220714]', '[img:ver06/info_psd.ifs:hexa_diver_220818]'],
   '2022083000': ['[img:ver06/info_psd.ifs:hexa_diver_220714]', '[img:ver06/info_psd.ifs:hexa_diver_220818]', '[img:ver06/info_psd.ifs:paseli_present_220901]'],
-  '2022101800': ['[img:ver06/info_psd.ifs:hexa_diver_220714]', '[img:ver06/info_psd.ifs:hexa_diver_220818]', '[img:ver06/info_psd.ifs:paseli_present_220901]']
+  '2022101800': ['[img:ver06/info_psd.ifs:hexa_diver_220714]', '[img:ver06/info_psd.ifs:hexa_diver_220818]', '[img:ver06/info_psd.ifs:paseli_present_220901]'],
+  '2022122001': ['[img:ver06/info_psd.ifs:hexa_diver_220714]', '[img:ver06/info_psd.ifs:hexa_diver_220818]', '[img:ver06/info_psd.ifs:paseli_present_220901]']
 }
 
 export const MISSINGSONGS6 = [
@@ -125,6 +126,9 @@ export const EVENT_SONGS6 = {
   ],
   "bpl2022_5": [
     '1957', '1955'
+  ],
+  "bpl2022_6": [
+    '1947', '1953'
   ]
 }
 
@@ -177,6 +181,9 @@ export const RESTRICTED_SONGS6 = {
   ],
   "bpl2022_5": [
     '1957', '1955'
+  ],
+  "bpl2022_6": [
+    '1947', '1953'
   ]
 }
 
@@ -941,7 +948,7 @@ export const VALGENE = {
 
 export const PREGENE = [
   {
-    id: 0,
+    id: 1,
     items: {
       'crew': [131],
       'stamp': [69, 70, 71, 72, 73, 74, 75, 76, 77, 78],
@@ -950,7 +957,7 @@ export const PREGENE = [
     probability: [0.01, 0.39, 0.6]
   },
   {
-    id: 1,
+    id: 2,
     items: {
       'crew': [134],
       'stamp': [110, 111, 112, 113, 114, 115, 116, 117, 118, 119],
